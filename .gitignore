@@ -1,0 +1,23 @@
+# Rust build výstup
+/target/
+
+# RustRover / IntelliJ
+.idea/
+
+# VS Code
+.vscode/
+
+# Logy
+*.log
+
+# Dočasné soubory
+*.tmp
+*.swp
+
+# Windows build artefakty
+*.exe
+*.pdb
+
+# OS bordel
+.DS_Store
+Thumbs.db
