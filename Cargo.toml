@@ -5,6 +5,14 @@ edition = "2021"
 description = "Valorant overlay, live match data & stats tracker"
 license = "MIT"
 
+[[bin]]
+name = "vantage"
+path = "src/main.rs"
+
+[lib]
+name = "vantage"
+path = "src/lib.rs"
+
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
@@ -16,3 +24,4 @@ anyhow = "1"
 base64 = "0.21"
 regex = "1"
 futures = "0.3"
+toml = "0.8"

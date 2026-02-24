@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* ── Design Tokens ──────────────────────────────────── */
+:root {
+  --bg-primary: #0f0f0f;
+  --bg-card: #161616;
+  --bg-card-hover: #1c1c1c;
+  --bg-input: #1a1a1a;
+  --border: #222222;
+  --border-light: #333333;
+  --text-primary: #ffffff;
+  --text-secondary: #999999;
+  --text-muted: #555555;
+  --accent: #ff4655;
+  --accent-hover: #ff5a67;
+  --green: #4ade80;
+  --yellow: #facc15;
+  --red: #ef4444;
+  --blue: #3b82f6;
+  --cyan: #06b6d4;
+}
+
+/* ── Base ──────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ── Selection ────────────────────────────────────── */
+::selection {
+  background: var(--accent);
+  color: white;
+}

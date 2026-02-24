@@ -1,7 +1,6 @@
-use colored::Colorize;
 
-pub fn agent_from_uuid(uuid: &str) -> &'static str {
-    match uuid.to_lowercase().as_str() {
+pub fn agent_from_uuid(uuid: &str) -> String {
+    let known = match uuid.to_lowercase().as_str() {
         "e370fa57-4757-3604-3648-499e1f642d3f" => "Gekko",
         "dade69b4-4f5a-8528-247b-219e5a1facd6" => "Fade",
         "5f8d3a7f-467b-97f3-062c-13acf203c006" => "Breach",
@@ -30,7 +29,12 @@ pub fn agent_from_uuid(uuid: &str) -> &'static str {
         "707eab51-4836-f488-046a-cda6bf494859" => "Viper",
         "5295c116-4749-0516-4b89-e0a4de94d37a" => "Yoru",
         _ => "",
+    };
+    if known.is_empty() && !uuid.is_empty() {
+        // Unknown UUID — print short form so we can add it to the map
+        eprintln!("  [?] Unknown agent UUID: {}", uuid);
     }
+    known.to_string()
 }
 
 #[derive(Debug, Clone)]

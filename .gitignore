@@ -1,23 +1,50 @@
-# Rust build výstup
+# ── Rust ─────────────────────────────────────────────
 /target/
+src-tauri/target/
+**/*.rs.bk
+Cargo.lock         # knihovny, ne workspace root — Tauri má vlastní
 
-# RustRover / IntelliJ
-.idea/
+# ── Node / Frontend ──────────────────────────────────
+node_modules/
+dist/
+.vite/
+.vite-temp/
 
-# VS Code
+# ── Tauri build output ────────────────────────────────
+src-tauri/gen/
+src-tauri/WixTools/
+*.msi
+*.dmg
+*.AppImage
+*.deb
+
+# ── Sensitive / runtime ──────────────────────────────
+# Valorant lockfile obsahuje přihlašovací token — NIKDY nepushovat
+lockfile
+*.lockfile
+.env
+.env.*
+!.env.example
+
+# Vantage config (obsahuje osobní nastavení)
+vantage_config.toml
+
+# ── IDE ───────────────────────────────────────────────
 .vscode/
+.idea/
+*.iml
 
-# Logy
-*.log
-
-# Dočasné soubory
-*.tmp
-*.swp
-
-# Windows build artefakty
-*.exe
-*.pdb
-
-# OS bordel
+# ── OS ────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# ── Logy a temp ──────────────────────────────────────
+*.log
+*.tmp
+*.swp
+*.pdb
+
+# ── Windows debug binaries ────────────────────────────
+# (release binaries jsou v src-tauri/target/release)
+*.exe

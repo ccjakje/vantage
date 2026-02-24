@@ -2,6 +2,7 @@ use anyhow::{anyhow, Result};
 use std::path::PathBuf;
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct Lockfile {
     pub name: String,
     pub pid: u32,

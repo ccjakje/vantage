@@ -109,10 +109,19 @@ pub fn print_team(
             format!("[{:<10}]", agent).truecolor(180, 180, 180)
         };
 
-        let name_col: ColoredString = if *is_self {
-            format!("★ {}", name).bright_yellow().bold()
+        // Anonymous = jméno není dostupné, zobraz agenta jako jméno
+        let (display_name, display_tag): (ColoredString, ColoredString) = if name.is_empty() {
+            if *is_self {
+                (format!("★ ???").bright_yellow().bold(), "".dimmed())
+            } else if !agent.is_empty() {
+                (format!("~ {}", agent).truecolor(140, 140, 140), "hidden".dimmed())
+            } else {
+                ("~ Anonymous".truecolor(100, 100, 100), "".dimmed())
+            }
+        } else if *is_self {
+            (format!("★ {}", name).bright_yellow().bold(), tag.white())
         } else {
-            name.white().into()
+            (name.white().into(), tag.dimmed())
         };
 
         let level_str: ColoredString = if *level > 0 {
@@ -122,10 +131,106 @@ pub fn print_team(
         };
 
         println!(
-            "  {:<24} #{:<8} {} {:<16} {:<18} {:<8} {} {:<24} {}",
-            name_col, tag.dimmed(),
+            "  {:<24} {:<10} {} {:<16} {:<18} {:<8} {} {:<24} {}",
+            display_name, display_tag,
             agent_str, rank_col, wr_col, hs_str,
             level_str, peak_str, smurf_str,
         );
     }
+}
+
+pub fn print_post_game(summary: &crate::models::MatchSummary, my_puuid: &str) {
+    // Header box
+    let result_str = if summary.won {
+        "WIN".bright_green().bold()
+    } else {
+        "LOSS".bright_red().bold()
+    };
+    let score_str = format!("{}-{}", summary.rounds_won, summary.rounds_lost);
+
+    let mode_display = match summary.mode.as_str() {
+        "competitive" => "Competitive",
+        "unrated"     => "Unrated",
+        "swiftplay"   => "Swiftplay",
+        "spikerush"   => "Spike Rush",
+        "deathmatch"  => "Deathmatch",
+        other         => other,
+    };
+
+    println!();
+    println!("{}", "╔══════════════════════════════════════════════════════════════╗".bright_red());
+    println!("{}  POST-GAME  │  {}  │  {}  │  {} {}  {}",
+        "║".bright_red(),
+        summary.map.bold(),
+        mode_display.dimmed(),
+        score_str.bold(),
+        result_str,
+        "║".bright_red(),
+    );
+    println!("{}", "╚══════════════════════════════════════════════════════════════╝".bright_red());
+    println!();
+
+    // Table header
+    println!("  {:<20} {:<12} {:<10} {:<6} {:<6} {:<6} {:<4}",
+        "PLAYER".bold(), "AGENT".bold(), "K/D/A".bold(),
+        "ACS".bold(), "HS%".bold(), "DMG".bold(), "FB".bold());
+    print_separator();
+
+    // Split into my team and enemy team
+    let my_team = summary.all_players.iter()
+        .find(|p| p.puuid == my_puuid)
+        .map(|p| p.team.clone())
+        .unwrap_or_else(|| "Blue".to_string());
+
+    let mut allies: Vec<_> = summary.all_players.iter().filter(|p| p.team == my_team).collect();
+    let mut enemies: Vec<_> = summary.all_players.iter().filter(|p| p.team != my_team).collect();
+
+    // Sort by ACS (descending)
+    allies.sort_by(|a, b| b.score.cmp(&a.score));
+    enemies.sort_by(|a, b| b.score.cmp(&a.score));
+
+    // Print allies
+    for p in &allies {
+        print_player_row(p, p.puuid == my_puuid);
+    }
+    print_separator();
+
+    // Print enemies
+    for p in &enemies {
+        print_player_row(p, false);
+    }
+
+    println!();
+}
+
+fn print_player_row(p: &crate::models::PlayerMatchStats, is_self: bool) {
+    let name_display = if is_self {
+        format!("★ {}", p.name).bright_yellow().bold()
+    } else {
+        p.name.white().into()
+    };
+
+    let kda = format!("{}/{}/{}", p.kills, p.deaths, p.assists);
+    let acs = format!("{}", p.score);
+
+    let hs_str = format!("{:.0}%", p.hs_percent);
+    let hs_col: ColoredString = if p.hs_percent >= 25.0 {
+        hs_str.bright_green()
+    } else if p.hs_percent >= 15.0 {
+        hs_str.white()
+    } else {
+        hs_str.truecolor(200, 80, 80)
+    };
+
+    let dmg = format!("{}", p.damage_dealt);
+    let fb = format!("{}", p.first_bloods);
+
+    let agent_col = if p.agent.is_empty() {
+        "???".dimmed()
+    } else {
+        p.agent.truecolor(180, 180, 180).into()
+    };
+
+    println!("  {:<20} {:<12} {:<10} {:<6} {:<6} {:<6} {:<4}",
+        name_display, agent_col, kda, acs, hs_col, dmg, fb);
 }

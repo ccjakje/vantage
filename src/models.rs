@@ -1,52 +1,8 @@
-use anyhow::Result;
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use serde::Deserialize;
 
-use crate::lockfile::Lockfile;
-
-pub struct LocalClient {
-    client: Client,
-    lockfile: Lockfile,
-}
-
-// --- Structs pro parsovani odpovedi ---
 
 #[derive(Debug, Deserialize)]
-pub struct Presence {
-    pub puuid: String,
-    pub game_name: String,
-    pub game_tag: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct PresencesResponse {
-    pub presences: Vec<Presence>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct PlayerMMR {
-    #[serde(rename = "Subject")]
-    pub subject: String,
-    #[serde(rename = "QueueSkills")]
-    pub queue_skills: HashMap<String, QueueSkill>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct QueueSkill {
-    #[serde(rename = "SeasonalInfoBySeasonID")]
-    pub seasonal_info: Option<HashMap<String, SeasonInfo>>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct SeasonInfo {
-    #[serde(rename = "Rank")]
-    pub rank: u32,
-    #[serde(rename = "NumberOfWins")]
-    pub wins: u32,
-}
-
-#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct PregameMatch {
     #[serde(rename = "ID")]
     pub id: String,
@@ -61,6 +17,7 @@ pub struct AllyTeam {
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct PregamePlayer {
     #[serde(rename = "Subject")]
     pub subject: String,
@@ -71,6 +28,7 @@ pub struct PregamePlayer {
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct PlayerIdentity {
     #[serde(rename = "Subject")]
     pub subject: String,
@@ -89,6 +47,7 @@ pub struct CoreGameMatch {
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct CoreGamePlayer {
     #[serde(rename = "Subject")]
     pub subject: String,
@@ -98,4 +57,56 @@ pub struct CoreGamePlayer {
     pub character_id: String,
     #[serde(rename = "PlayerIdentity")]
     pub identity: PlayerIdentity,
+}
+
+// --- Post-game stats ---
+
+#[derive(Debug, Clone)]
+pub struct MatchSummary {
+    pub match_id: String,
+    pub map: String,
+    pub mode: String,
+    pub won: bool,
+    pub rounds_won: u32,
+    pub rounds_lost: u32,
+    pub duration_minutes: u32,
+    pub my_stats: PlayerMatchStats,
+    pub all_players: Vec<PlayerMatchStats>,
+}
+
+#[derive(Debug, Clone)]
+pub struct PlayerMatchStats {
+    pub puuid: String,
+    pub name: String,
+    pub tag: String,
+    pub agent: String,
+    pub team: String,
+    pub kills: u32,
+    pub deaths: u32,
+    pub assists: u32,
+    pub score: u32,
+    pub hs_percent: f32,
+    pub damage_dealt: u32,
+    pub first_bloods: u32,
+}
+
+// --- Match history (per-match lightweight entry) ---
+
+#[derive(Debug, Clone)]
+pub struct MatchHistoryEntry {
+    pub match_id: String,
+    pub map: String,
+    pub mode: String,
+    pub won: bool,
+    pub rounds_won: u32,
+    pub rounds_lost: u32,
+    pub kills: u32,
+    pub deaths: u32,
+    pub assists: u32,
+    pub acs: u32,
+    pub hs_percent: f32,
+    pub agent: String,
+    pub rank_after: u32,
+    pub start_time: u64,       // Unix ms
+    pub duration_minutes: u32,
 }
