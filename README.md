@@ -69,7 +69,7 @@ Vantage reads this file to authenticate with the local API — the same way Riot
 > Requires Windows and a running Valorant client.
 
 ```bash
-git clone https://github.com/yourusername/vantage
+git clone https://github.com/ccjakje/vantage
 cd vantage
 
 # Run CLI
