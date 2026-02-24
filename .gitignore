@@ -2,7 +2,7 @@
 /target/
 src-tauri/target/
 **/*.rs.bk
-Cargo.lock         # knihovny, ne workspace root — Tauri má vlastní
+Cargo.lock 
 
 # ── Node / Frontend ──────────────────────────────────
 node_modules/
@@ -19,7 +19,6 @@ src-tauri/WixTools/
 *.deb
 
 # ── Sensitive / runtime ──────────────────────────────
-# Valorant lockfile obsahuje přihlašovací token — NIKDY nepushovat
 lockfile
 *.lockfile
 .env
@@ -46,5 +45,4 @@ desktop.ini
 *.pdb
 
 # ── Windows debug binaries ────────────────────────────
-# (release binaries jsou v src-tauri/target/release)
 *.exe
